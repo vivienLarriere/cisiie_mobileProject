@@ -3,11 +3,17 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'App' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
+angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule',
+  "ngSanitize",
+  "com.2fdevs.videogular",
+  "com.2fdevs.videogular.plugins.controls",
+  "com.2fdevs.videogular.plugins.overlayplay",
+  "com.2fdevs.videogular.plugins.poster"
+])
 
   .run(['$ionicPlatform', '$sqliteService', 'Ionicitude',
-    function($ionicPlatform, $sqliteService, Ionicitude) {
-      $ionicPlatform.ready(function() {
+    function ($ionicPlatform, $sqliteService, Ionicitude) {
+      $ionicPlatform.ready(function () {
         if (window.cordova && window.cordova.plugins.Keyboard) {
           // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
           // for form inputs)
@@ -25,9 +31,9 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
         // The code placed inside the $ionicPlatform.ready() function is executed only when the device is ready,
         // so this is a perfect place to call the Ionicitude.init() method.
         Ionicitude.init()
-          .then(function() {
+          .then(function () {
             console.log('Here you go. Ionicitude is fully initialized !');
-            // Now that Ionicitude is initialized, we can safely add the Actions that could be called from within an AR View.
+            // Now that Ionicitude is initialized, we can safely add the Actions that could be called from within an Le système solaire.
             // Note that these actions will be executed by the Ionic WebView and in its context.
             // To call this captureScreen action, there should be, in one of your AR World JS code and assuming that you're using Ionicitude's CHM, something like :
             //  document.location = architectsdk://captureScreen
@@ -35,7 +41,7 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
               .addAction(captureScreen)
               .addAction(markerselected);
           })
-          .catch(function(error) {
+          .catch(function (error) {
             console.log("Hu-ho..! Something has failed !", error);
           });
 
@@ -52,7 +58,7 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
     '$urlRouterProvider',
     '$ionicConfigProvider',
     '$compileProvider',
-    function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider) {
+    function ($stateProvider, $urlRouterProvider, $ionicConfigProvider, $compileProvider) {
 
       $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|blob|content|ms-appx|x-wmapp0):|data:image\/|img\//);
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|ghttps?|ms-appx|x-wmapp0):/);
@@ -61,74 +67,74 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
 
       $stateProvider
         .state('home', {
-          url: "/home",
+          url        : "/home",
           templateUrl: "templates/home.html",
-          controller: 'HomeController'
+          controller : 'HomeController'
         })
         .state('app', {
-          url: '/app',
-          abstract: true,
-          controller: 'AppController',
+          url        : '/app',
+          abstract   : true,
+          controller : 'AppController',
           templateUrl: 'templates/menu.html'
         })
         .state('app.gallery', {
-          url: "/gallery",
+          url  : "/gallery",
           cache: false,
           views: {
             viewContent: {
               templateUrl: "templates/gallery.html",
-              controller: 'GalleryController'
+              controller : 'GalleryController'
             }
           }
         })
 
         .state('app.item', {
-          url: "/item/{title}",
+          url   : "/item/{title}",
           params: {
             color: null,
-            icon: null
+            icon : null
           },
-          cache: false,
-          views: {
+          cache : false,
+          views : {
             viewContent: {
               templateUrl: "templates/item.html",
-              controller: 'ItemController'
+              controller : 'ItemController'
             }
           }
         })
 
         .state('app.ar', {
-          url: "/ar",
-          cache: false,
+          url   : "/ar",
+          cache : false,
           params: {
             color: null,
-            icon: null
+            icon : null
           },
-          views: {
+          views : {
             viewContent: {
               templateUrl: "templates/AR_menu.html",
-              controller: 'MainCtrl'
+              controller : 'MainCtrl'
             }
           }
         })
 
         .state('app.videos', {
-          url: "/videos",
-          cache: false,
+          url   : "/videos",
+          cache : false,
           params: {
             color: null,
-            icon: null
+            icon : null
           },
-          views: {
+          views : {
             viewContent: {
               templateUrl: "templates/video.html",
-              controller: 'VideoCtrl'
+              controller : 'VideoCtrl'
             }
           }
         });
 
 
-      $urlRouterProvider.otherwise(function($injector, $location) {
+      $urlRouterProvider.otherwise(function ($injector) {
         var $state = $injector.get("$state");
         $state.go("home");
       });
@@ -136,26 +142,26 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
   ]);
 
 /* global ionic */
-(function(angular, ionic) {
+(function (angular, ionic) {
   "use strict";
 
-  ionic.Platform.isIE = function() {
+  ionic.Platform.isIE = function () {
     return ionic.Platform.ua.toLowerCase().indexOf('trident') > -1;
   }
 
   if (ionic.Platform.isIE()) {
     angular.module('ionic')
-      .factory('$ionicNgClick', ['$parse', '$timeout', function($parse, $timeout) {
-        return function(scope, element, clickExpr) {
+      .factory('$ionicNgClick', ['$parse', '$timeout', function ($parse, $timeout) {
+        return function (scope, element, clickExpr) {
           var clickHandler = angular.isFunction(clickExpr) ? clickExpr : $parse(clickExpr);
 
-          element.on('click', function(event) {
-            scope.$apply(function() {
+          element.on('click', function (event) {
+            scope.$apply(function () {
               if (scope.clicktimer) return; // Second call
               clickHandler(scope, {
                 $event: (event)
               });
-              scope.clicktimer = $timeout(function() {
+              scope.clicktimer = $timeout(function () {
                 delete scope.clicktimer;
               }, 1, false);
             });
@@ -163,7 +169,8 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
 
           // Hack for iOS Safari's benefit. It goes searching for onclick handlers and is liable to click
           // something else nearby.
-          element.onclick = function(event) {};
+          element.onclick = function (event) {
+          };
         };
       }]);
   }
@@ -173,8 +180,8 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule'])
 
     return {
       restrict: 'E',
-      replace: false,
-      link: function(scope, element) {
+      replace : false,
+      link    : function (scope, element) {
         if (ionic.Platform && (ionic.Platform.isWindowsPhone() || ionic.Platform.isIE() || ionic.Platform.platform() === "edge")) {
           element.attr('data-tap-disabled', 'true');
         }
@@ -197,52 +204,53 @@ window.queries = [
   //Insert Users
   "INSERT INTO 'Users' ('Name') VALUES ('Vivien Larriere');"
 ];
-(function() {
+(function () {
   'use strict';
 
   angular
     .module('App')
     .controller('AppController', AppController);
 
-  AppController.$inject = ['$scope', '$ionicPopover'];
+  AppController.$inject = ['$scope', '$ionicPopover', '$injector'];
 
-  function AppController($scope, $ionicPopover) {
+  function AppController($scope, $ionicPopover, $injector) {
 
-    $scope.items = [{
+    $scope.items =
+      [{
         color: "#184d77",
-        icon: "ion-planet",
-        title: "AR View",
-        path: "ar"
+        icon : "ion-planet",
+        title: "Le système solaire",
+        path : "app.ar"
       },
-      {
-        color: "#a2e6f0",
-        icon: "ion-ios-videocam",
-        title: "Videos",
-        path: "videos"
-      }
+        {
+          color: "#40585d",
+          icon : "ion-ios-videocam",
+          title: "Nos gardiens",
+          path : "app.videos"
+        }
 
-    ];
+      ];
 
-    $scope.exitApp = function() {
+    $scope.exitApp = function () {
       ionic.Platform.exitApp();
     };
 
     $ionicPopover.fromTemplateUrl('templates/modals/popover.html', {
       scope: $scope
-    }).then(function(popover) {
+    }).then(function (popover) {
       $scope.popover = popover;
     });
 
-    $scope.openPopover = function($event) {
+    $scope.openPopover = function ($event) {
       $scope.popover.show($event);
     };
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
       $scope.popover.remove();
     });
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -252,13 +260,13 @@ window.queries = [
   GalleryController.$inject = ['$scope', '$state'];
 
   function GalleryController($scope, $state) {
-    $scope.openItem = function(item) {
+    $scope.openItem = function (item) {
       switch (item.title) {
-        case "AR View":
+        case "Le système solaire":
           $state.go("app.ar");
           break;
 
-        case "Videos":
+        case "Nos gardiens":
           $state.go('app.videos');
           break;
 
@@ -271,7 +279,7 @@ window.queries = [
 })();
 
 
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -284,22 +292,22 @@ window.queries = [
 
     $scope.users = [];
 
-    $scope.HelloWorld = function() {
+    $scope.HelloWorld = function () {
       $ionicPopup.alert({
-        title: 'Hello World',
+        title   : 'Hello World',
         template: 'Bienvenue !',
         cssClass: 'animated bounceInDown'
       });
     };
 
-    $scope.showUsers = function() {
-      Model.Users.getAll().then(function(users) {
+    $scope.showUsers = function () {
+      Model.Users.getAll().then(function (users) {
         $scope.users = angular.copy(users);
       });
       Modals.openModal($scope, 'templates/modals/users.html', 'animated rotateInDownLeft');
     };
 
-    $scope.closeModal = function() {
+    $scope.closeModal = function () {
       Modals.closeModal();
       $scope.users = [];
     };
@@ -309,7 +317,7 @@ window.queries = [
     //2. http://codepen.io/anon/pen/meQJvp
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -322,22 +330,40 @@ window.queries = [
 
     $scope.item = {
       title: $stateParams.title,
-      icon: $stateParams.icon,
-      color: $stateParams.color
+      icon : $stateParams.icon,
+      color: $stateParams.color,
+      path : $stateParams.path
     };
 
     if (!$scope.item.color) {
       $ionicViewSwitcher.nextDirection('back');
       $ionicHistory.nextViewOptions({
-        disableBack: true,
+        disableBack   : true,
         disableAnimate: true,
-        historyRoot: true
+        historyRoot   : true
       });
       $state.go('app.gallery');
     }
+
+    $scope.openItem = function (item) {
+      console.log(item);
+      switch (item.title) {
+        case "Le système solaire":
+          $state.go("app.ar");
+          break;
+
+        case "Nos gardiens":
+          $state.go('app.videos');
+          break;
+
+        default:
+          $state.go('app.home');
+          break;
+      }
+    };
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -350,20 +376,20 @@ window.queries = [
 
     return {
       restrict: 'A',
-      link: function(scope, element, attrs) {
-        $ionicGesture.on('hold', function(e) {
+      link    : function (scope, element, attrs) {
+        $ionicGesture.on('hold', function (e) {
 
           var content = element[0].querySelector('.item-content');
 
           var buttons = element[0].querySelector('.item-options');
           var buttonsWidth = buttons.offsetWidth;
 
-          ionic.requestAnimationFrame(function() {
+          ionic.requestAnimationFrame(function () {
             content.style[ionic.CSS.TRANSITION] = 'all ease-out .25s';
 
             if (!buttons.classList.contains('invisible')) {
               content.style[ionic.CSS.TRANSFORM] = '';
-              setTimeout(function() {
+              setTimeout(function () {
                 buttons.classList.add('invisible');
               }, 250);
             } else {
@@ -378,7 +404,7 @@ window.queries = [
     };
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -390,34 +416,34 @@ window.queries = [
   function ionMultipleSelect($ionicModal, $ionicGesture) {
 
     return {
-      restrict: 'E',
-      scope: {
+      restrict  : 'E',
+      scope     : {
         options: "="
       },
-      controller: function($scope, $element, $attrs) {
+      controller: function ($scope, $element, $attrs) {
         $scope.multipleSelect = {
-          title: $attrs.title || "Select Options",
-          tempOptions: [],
-          keyProperty: $attrs.keyProperty || "id",
-          valueProperty: $attrs.valueProperty || "value",
+          title           : $attrs.title || "Select Options",
+          tempOptions     : [],
+          keyProperty     : $attrs.keyProperty || "id",
+          valueProperty   : $attrs.valueProperty || "value",
           selectedProperty: $attrs.selectedProperty || "selected",
-          templateUrl: $attrs.templateUrl || 'templates/multipleSelect.html',
-          renderCheckbox: $attrs.renderCheckbox ? $attrs.renderCheckbox == "true" : true,
-          animation: $attrs.animation || 'slide-in-up'
+          templateUrl     : $attrs.templateUrl || 'templates/multipleSelect.html',
+          renderCheckbox  : $attrs.renderCheckbox ? $attrs.renderCheckbox == "true" : true,
+          animation       : $attrs.animation || 'slide-in-up'
         };
 
-        $scope.OpenModalFromTemplate = function(templateUrl) {
+        $scope.OpenModalFromTemplate = function (templateUrl) {
           $ionicModal.fromTemplateUrl(templateUrl, {
-            scope: $scope,
+            scope    : $scope,
             animation: $scope.multipleSelect.animation
-          }).then(function(modal) {
+          }).then(function (modal) {
             $scope.modal = modal;
             $scope.modal.show();
           });
         };
 
-        $ionicGesture.on('tap', function(e) {
-          $scope.multipleSelect.tempOptions = $scope.options.map(function(option) {
+        $ionicGesture.on('tap', function (e) {
+          $scope.multipleSelect.tempOptions = $scope.options.map(function (option) {
             var tempOption = {};
             tempOption[$scope.multipleSelect.keyProperty] = option[$scope.multipleSelect.keyProperty];
             tempOption[$scope.multipleSelect.valueProperty] = option[$scope.multipleSelect.valueProperty];
@@ -428,7 +454,7 @@ window.queries = [
           $scope.OpenModalFromTemplate($scope.multipleSelect.templateUrl);
         }, $element);
 
-        $scope.saveOptions = function() {
+        $scope.saveOptions = function () {
           for (var i = 0; i < $scope.multipleSelect.tempOptions.length; i++) {
             var tempOption = $scope.multipleSelect.tempOptions[i];
             for (var j = 0; j < $scope.options.length; j++) {
@@ -442,10 +468,10 @@ window.queries = [
           $scope.closeModal();
         };
 
-        $scope.closeModal = function() {
+        $scope.closeModal = function () {
           $scope.modal.remove();
         };
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
           if ($scope.modal) {
             $scope.modal.remove();
           }
@@ -454,7 +480,7 @@ window.queries = [
     };
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -466,24 +492,24 @@ window.queries = [
   function ionSearchSelect($ionicModal, $ionicGesture) {
 
     return {
-      restrict: 'E',
-      scope: {
-        options: "=",
+      restrict  : 'E',
+      scope     : {
+        options       : "=",
         optionSelected: "="
       },
-      controller: function($scope, $element, $attrs) {
+      controller: function ($scope, $element, $attrs) {
         $scope.searchSelect = {
-          title: $attrs.title || "Search",
-          keyProperty: $attrs.keyProperty,
+          title        : $attrs.title || "Search",
+          keyProperty  : $attrs.keyProperty,
           valueProperty: $attrs.valueProperty,
-          templateUrl: $attrs.templateUrl || 'templates/searchSelect.html',
-          animation: $attrs.animation || 'slide-in-up',
-          option: null,
-          searchvalue: "",
-          enableSearch: $attrs.enableSearch ? $attrs.enableSearch == "true" : true
+          templateUrl  : $attrs.templateUrl || 'templates/searchSelect.html',
+          animation    : $attrs.animation || 'slide-in-up',
+          option       : null,
+          searchvalue  : "",
+          enableSearch : $attrs.enableSearch ? $attrs.enableSearch == "true" : true
         };
 
-        $ionicGesture.on('tap', function(e) {
+        $ionicGesture.on('tap', function (e) {
 
           if (!!$scope.searchSelect.keyProperty && !!$scope.searchSelect.valueProperty) {
             if ($scope.optionSelected) {
@@ -495,7 +521,7 @@ window.queries = [
           $scope.OpenModalFromTemplate($scope.searchSelect.templateUrl);
         }, $element);
 
-        $scope.saveOption = function() {
+        $scope.saveOption = function () {
           if (!!$scope.searchSelect.keyProperty && !!$scope.searchSelect.valueProperty) {
             for (var i = 0; i < $scope.options.length; i++) {
               var currentOption = $scope.options[i];
@@ -511,24 +537,24 @@ window.queries = [
           $scope.modal.remove();
         };
 
-        $scope.clearSearch = function() {
+        $scope.clearSearch = function () {
           $scope.searchSelect.searchvalue = "";
         };
 
-        $scope.closeModal = function() {
+        $scope.closeModal = function () {
           $scope.modal.remove();
         };
-        $scope.$on('$destroy', function() {
+        $scope.$on('$destroy', function () {
           if ($scope.modal) {
             $scope.modal.remove();
           }
         });
 
-        $scope.OpenModalFromTemplate = function(templateUrl) {
+        $scope.OpenModalFromTemplate = function (templateUrl) {
           $ionicModal.fromTemplateUrl(templateUrl, {
-            scope: $scope,
+            scope    : $scope,
             animation: $scope.searchSelect.animation
-          }).then(function(modal) {
+          }).then(function (modal) {
             $scope.modal = modal;
             $scope.modal.show();
           });
@@ -537,7 +563,7 @@ window.queries = [
     };
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -550,37 +576,37 @@ window.queries = [
 
     var modals = [];
 
-    var _openModal = function($scope, templateUrl, animation) {
+    var _openModal = function ($scope, templateUrl, animation) {
       return $ionicModal.fromTemplateUrl(templateUrl, {
-        scope: $scope,
-        animation: animation || 'slide-in-up',
+        scope               : $scope,
+        animation           : animation || 'slide-in-up',
         backdropClickToClose: false
-      }).then(function(modal) {
+      }).then(function (modal) {
         modals.push(modal);
         modal.show();
       });
     };
 
-    var _closeModal = function() {
+    var _closeModal = function () {
       var currentModal = modals.splice(-1, 1)[0];
       currentModal.remove();
     };
 
-    var _closeAllModals = function() {
-      modals.map(function(modal) {
+    var _closeAllModals = function () {
+      modals.map(function (modal) {
         modal.remove();
       });
       modals = [];
     };
 
     return {
-      openModal: _openModal,
-      closeModal: _closeModal,
+      openModal     : _openModal,
+      closeModal    : _closeModal,
       closeAllModals: _closeAllModals
     };
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -596,7 +622,7 @@ window.queries = [
     };
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -610,12 +636,12 @@ window.queries = [
     var self = this;
     var _db;
 
-    self.db = function() {
+    self.db = function () {
       if (!_db) {
         if (window.sqlitePlugin !== undefined) {
           _db = window.sqlitePlugin.openDatabase({
-            name: "pre.db",
-            location: 2,
+            name              : "pre.db",
+            location          : 2,
             createFromLocation: 1
           });
         } else {
@@ -626,67 +652,67 @@ window.queries = [
       return _db;
     };
 
-    self.getFirstItem = function(query, parameters) {
+    self.getFirstItem = function (query, parameters) {
       var deferred = $q.defer();
-      self.executeSql(query, parameters).then(function(res) {
+      self.executeSql(query, parameters).then(function (res) {
 
         if (res.rows.length > 0)
           return deferred.resolve(res.rows.item(0));
         else
           return deferred.reject("There aren't items matching");
-      }, function(err) {
+      }, function (err) {
         return deferred.reject(err);
       });
 
       return deferred.promise;
     };
 
-    self.getFirstOrDefaultItem = function(query, parameters) {
+    self.getFirstOrDefaultItem = function (query, parameters) {
       var deferred = $q.defer();
-      self.executeSql(query, parameters).then(function(res) {
+      self.executeSql(query, parameters).then(function (res) {
 
         if (res.rows.length > 0)
           return deferred.resolve(res.rows.item(0));
         else
           return deferred.resolve(null);
-      }, function(err) {
+      }, function (err) {
         return deferred.reject(err);
       });
 
       return deferred.promise;
     };
 
-    self.getItems = function(query, parameters) {
+    self.getItems = function (query, parameters) {
       var deferred = $q.defer();
-      self.executeSql(query, parameters).then(function(res) {
+      self.executeSql(query, parameters).then(function (res) {
         var items = [];
         for (var i = 0; i < res.rows.length; i++) {
           items.push(res.rows.item(i));
         }
         return deferred.resolve(items);
-      }, function(err) {
+      }, function (err) {
         return deferred.reject(err);
       });
 
       return deferred.promise;
     };
 
-    self.preloadDataBase = function(enableLog) {
+    self.preloadDataBase = function (enableLog) {
       var deferred = $q.defer();
 
       //window.open("data:text/plain;charset=utf-8," + JSON.stringify({ data: window.queries.join('').replace(/\\n/g, '\n') }));
       if (window.sqlitePlugin === undefined) {
         enableLog && console.log('%c ***************** Starting the creation of the database in the browser ***************** ', 'background: #222; color: #bada55');
-        self.db().transaction(function(tx) {
+        self.db().transaction(function (tx) {
           for (var i = 0; i < window.queries.length; i++) {
             var query = window.queries[i].replace(/\\n/g, '\n');
 
             enableLog && console.log(window.queries[i]);
             tx.executeSql(query);
           }
-        }, function(error) {
+        }, function (error) {
           deferred.reject(error);
-        }, function() {
+        }, function () {
           enableLog && console.log('%c ***************** Completing the creation of the database in the browser ***************** ', 'background: #222; color: #bada55');
           deferred.resolve("OK");
         });
@@ -697,12 +723,12 @@ window.queries = [
       return deferred.promise;
     };
 
-    self.executeSql = function(query, parameters) {
+    self.executeSql = function (query, parameters) {
       return $cordovaSQLite.execute(self.db(), query, parameters);
     };
   }
 })();
-(function() {
+(function () {
   'use strict';
 
   angular
@@ -714,11 +740,11 @@ window.queries = [
   function Users($q, $sqliteService) {
 
     return {
-      getAll: function() {
+      getAll: function () {
         var query = "Select * FROM Users";
         return $q.when($sqliteService.getItems(query));
       },
-      add: function(user) {
+      add   : function (user) {
         var query = "INSERT INTO Users (Name) VALUES (?)";
         return $q.when($sqliteService.executeSql(query, [user.Name]));
       }
@@ -726,20 +752,20 @@ window.queries = [
   }
 })();
 
-(function() {
+(function () {
   'use strict';
 
   angular.module('App')
-    .controller('MainCtrl', function($scope, Ionicitude) {
-      $scope.launchAR = function(ref) {
+    .controller('MainCtrl', function ($scope, Ionicitude) {
+      $scope.launchAR = function (ref) {
         try {
           // The ref passed as an argument to Ionicitude.launchAR() must be the name
           // of a directory in the wikitude-worlds directory.
           Ionicitude.launchAR(ref)
-            .then(function() {
+            .then(function () {
               console.log('OK ! The ' + ref + ' AR World has been perfectly launched !');
             })
-            .catch(function(error) {
+            .catch(function (error) {
               console.log('Error while trying to launch the ' + ref + ' AR World.', error);
             })
         } catch (error) {
@@ -753,11 +779,55 @@ window.queries = [
     });
 })();
 
-(function() {
+
+(function () {
   'use strict';
 
   angular.module('App')
-    .controller('VideoCtrl', function($scope) {
+    .controller('VideoCtrl',
+      ["$sce", function ($sce) {
+        this.config = {
+          preload: "none",
+          sources: [
+            {
+              src : "./vid/Gotg.mp4",
+              type: "video/mp4"
+            }
+          ],
+          tracks : [
+            {
+              src    : "./vid/subs/Gotg_fr.vtt",
+              kind   : "subtitles",
+              srclang: "fr",
+              label  : "Français",
+              default: "default"
+            }
+          ],
+          theme  : {
+            url: "http://www.videogular.com/styles/themes/default/latest/videogular.css"
+          },
+          plugins: {
+            poster  : "./vid/posters/Gotg.jpg",
+            controls: {
+              autoHide    : true,
+              autoHideTime: 3000
+            }
+          }
 
-    })
+        };
+      }]
+    )
+    .directive("mySubsButton",
+      function () {
+        return {
+          restrict: "E",
+          require : "^videogular",
+          template: "<div class='iconButton' ng-click='API.stop()'>STOP</div>",
+          link    : function (scope, elem, attrs, API) {
+            scope.API = API;
+          }
+        }
+      }
+    );
 })();
+
