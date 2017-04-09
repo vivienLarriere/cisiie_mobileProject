@@ -244,7 +244,7 @@ window.queries = [
         },
         {
           color: "#5d0b09",
-          icon : "ion-ios-videocam",
+          icon : "ion-social-youtube",
           title: "Notre galaxie",
           path : "app.videosYT"
         }
@@ -374,6 +374,10 @@ window.queries = [
 
         case "Nos gardiens":
           $state.go('app.videos');
+          break;
+
+        case "Notre galaxie":
+          $state.go('app.videosYT');
           break;
 
         default:
