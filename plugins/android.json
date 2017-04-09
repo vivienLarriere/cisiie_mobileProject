@@ -1,0 +1,33 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com.wikitude.phonegap.WikitudePlugin": {
+            "PACKAGE_NAME": "demo.ionicitude.app"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "demo.ionicitude.app"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "demo.ionicitude.app"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "demo.ionicitude.app"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "demo.ionicitude.app"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "demo.ionicitude.app"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "demo.ionicitude.app"
+        }
+    },
+    "dependent_plugins": {}
+}
