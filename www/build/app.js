@@ -131,6 +131,20 @@ angular.module('App', ['ionic', 'ngCordova', 'ngAnimate', 'IonicitudeModule',
               controller : 'VideoCtrl'
             }
           }
+        })
+        .state('app.videosYT', {
+          url   : "/videosYT",
+          cache : false,
+          params: {
+            color: null,
+            icon : null
+          },
+          views : {
+            viewContent: {
+              templateUrl: "templates/videoYT.html",
+              controller : 'VideoYTCtrl'
+            }
+          }
         });
 
 
@@ -227,6 +241,12 @@ window.queries = [
           icon : "ion-ios-videocam",
           title: "Nos gardiens",
           path : "app.videos"
+        },
+        {
+          color: "#5d0b09",
+          icon : "ion-ios-videocam",
+          title: "Notre galaxie",
+          path : "app.videosYT"
         }
 
       ];
@@ -270,6 +290,10 @@ window.queries = [
           $state.go('app.videos');
           break;
 
+        case "Notre galaxie":
+          $state.go('app.videosYT');
+          break;
+
         default:
           $state.go('app.home');
           break;
@@ -311,10 +335,6 @@ window.queries = [
       Modals.closeModal();
       $scope.users = [];
     };
-
-    //Center content
-    //1. http://codepen.io/mhartington/pen/gcHeL
-    //2. http://codepen.io/anon/pen/meQJvp
   }
 })();
 (function () {
@@ -779,10 +799,17 @@ window.queries = [
     });
 })();
 
-
 (function () {
   'use strict';
 
+  angular.module('App')
+    .controller('VideoYTCtrl', function ($scope) {
+      // blabla
+    });
+})();
+
+(function () {
+  'use strict';
   angular.module('App')
     .controller('VideoCtrl',
       ["$sce", function ($sce) {
@@ -830,4 +857,5 @@ window.queries = [
       }
     );
 })();
+
 
